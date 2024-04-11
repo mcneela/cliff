@@ -45,7 +45,11 @@ def init_args():
     parser.add_argument('-n','--name', type=str, help='Output job name')
     parser.add_argument('-p','--nproc', type=int, help='Number of threads for numpy')
     parser.add_argument('-fr','--frag',type=bool, nargs="?", default=False, help='Do fragmentation analysis')
+<<<<<<< HEAD
     parser.add_argument('--batch-id', type=int, help='batch id')
+=======
+    parser.add_argument('--batch-id',type=int, help='current batch id')
+>>>>>>> 75de41cc3e1047656f6515935a9126fb8af916a6
 
     return parser.parse_args()
 
