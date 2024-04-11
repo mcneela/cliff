@@ -45,6 +45,7 @@ def init_args():
     parser.add_argument('-n','--name', type=str, help='Output job name')
     parser.add_argument('-p','--nproc', type=int, help='Number of threads for numpy')
     parser.add_argument('-fr','--frag',type=bool, nargs="?", default=False, help='Do fragmentation analysis')
+    parser.add_argument('--batch-id', type=int, help='batch id')
 
     return parser.parse_args()
 
@@ -354,10 +355,14 @@ def print_timings(logger, timer):
     logger.info("    ~Induction     :  %10.3f s" % timer['ind'])
     logger.info("    ~Dispersion    :  %10.3f s" % timer['disp'])
 
-def main(inpt=None, dimer=None, monA=None, monB=None, nproc=None, name=None, frag = None, units='angstrom'):
+def main(inpt=None, dimer=None, monA=None, monB=None, nproc=None, name=None, frag=None, batch_id=None, units='angstrom'):
     start = time.time()
     logger = logging.getLogger(__name__)
-    fh = logging.FileHandler(name + '.log')
+    if not os.path.exists('logs'):
+        os.makedirs('logs')
+    if not os.path.exists('outputs'):
+        os.makedirs('outputs')
+    fh = logging.FileHandler('logs/' + str(batch_id) + '.log')
     logger.addHandler(fh)
 
     infile = get_infile(inpt)
@@ -366,7 +371,7 @@ def main(inpt=None, dimer=None, monA=None, monB=None, nproc=None, name=None, fra
     options = Options(infile,name) 
     options.set_name(name) 
     logger.setLevel(options.logger_level)
-    with open(name + '.csv','w') as cout:
+    with open('outputs/' + name + '_' + str(batch_id) + '.csv','w') as cout:
         cout.write("# Monomer A, Monomer B, Electrostatics, Exchange, Induction, Dispersion, Total (kcal/mol)")
     if os.path.isfile(name + '.json'):
         os.remove(name + '.json')
@@ -433,5 +438,5 @@ if __name__ == "__main__":
     if args.frag != False:
         frag = True
 
-    main(args.input, args.dimer, args.monA, args.monB, args.nproc, name, frag)
+    main(args.input, args.dimer, args.monA, args.monB, args.nproc, name, frag, batch_id=args.batch_id)
 
