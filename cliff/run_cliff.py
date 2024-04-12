@@ -45,11 +45,7 @@ def init_args():
     parser.add_argument('-n','--name', type=str, help='Output job name')
     parser.add_argument('-p','--nproc', type=int, help='Number of threads for numpy')
     parser.add_argument('-fr','--frag',type=bool, nargs="?", default=False, help='Do fragmentation analysis')
-<<<<<<< HEAD
     parser.add_argument('--batch-id', type=int, help='batch id')
-=======
-    parser.add_argument('--batch-id',type=int, help='current batch id')
->>>>>>> 75de41cc3e1047656f6515935a9126fb8af916a6
 
     return parser.parse_args()
 
@@ -227,9 +223,9 @@ def update_files(name, ret):
     
     # Append to csv
     try:
-        cout = open(name + '.csv','a+')
+        cout = open('outputs/' + name + '.csv','a+')
     except:
-        cout = open(name + '.csv','w')
+        cout = open('outputs/' + name + '.csv','w')
         cout.write("# Monomer A, Monomer B, Electrostatics, Exchange, Induction, Dispersion, Total (kcal/mol)")
 
     for lab, en in zip(labels,energies):
@@ -366,7 +362,7 @@ def main(inpt=None, dimer=None, monA=None, monB=None, nproc=None, name=None, fra
         os.makedirs('logs')
     if not os.path.exists('outputs'):
         os.makedirs('outputs')
-    fh = logging.FileHandler('logs/' + str(batch_id) + '.log')
+    fh = logging.FileHandler('logs/' + name + '.log')
     logger.addHandler(fh)
 
     infile = get_infile(inpt)
@@ -375,7 +371,7 @@ def main(inpt=None, dimer=None, monA=None, monB=None, nproc=None, name=None, fra
     options = Options(infile,name) 
     options.set_name(name) 
     logger.setLevel(options.logger_level)
-    with open('outputs/' + name + '_' + str(batch_id) + '.csv','w') as cout:
+    with open('outputs/' + name + '.csv','w') as cout:
         cout.write("# Monomer A, Monomer B, Electrostatics, Exchange, Induction, Dispersion, Total (kcal/mol)")
     if os.path.isfile(name + '.json'):
         os.remove(name + '.json')
@@ -390,6 +386,7 @@ def main(inpt=None, dimer=None, monA=None, monB=None, nproc=None, name=None, fra
     if nproc is not None:
         logger.info("    Using {} threads".format(nproc))
     else:
+        print("nproc is none")
         logger.info("    Using {} threads".format(mp.cpu_count()))
 
     if dimer is not None:
@@ -431,7 +428,7 @@ def main(inpt=None, dimer=None, monA=None, monB=None, nproc=None, name=None, fra
 
 if __name__ == "__main__":
     args = init_args()
-    name = 'output'
+    name = f'output_{args.dimer.split("/")[-1]}'
     if args.name is not None:
         name = args.name
 

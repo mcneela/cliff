@@ -25,7 +25,7 @@ class Options:
             self.name = name
 
         self.logger = logging.getLogger(__name__)
-        fh = logging.FileHandler(self.name + '.log')
+        fh = logging.FileHandler('logs/' + self.name + '.log')
         self.logger.addHandler(fh)
 
 

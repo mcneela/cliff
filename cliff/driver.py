@@ -20,6 +20,7 @@ import time
 import numpy as np
 import glob
 import qcelemental as qcel
+from tqdm import tqdm
 
 #import cliff
 from cliff.helpers.options import Options
@@ -286,7 +287,7 @@ def predict_from_dimers(dimers, ml_type='KRR', load_path=None, return_pairs=Fals
             models = load_krr_models(options) 
 
         # get the monomers
-        for dimer in d_list:
+        for dimer in tqdm(d_list, desc="Predicting atomic properties"):
             try:
                 mon_a, mon_b = mol_to_sys(dimer, options)
                 if load_path is None:
@@ -332,7 +333,7 @@ def predict_from_dimers(dimers, ml_type='KRR', load_path=None, return_pairs=Fals
     f = time.time()
     print(f"Time spent predicting atomic properties: {f-s} s")
         
-    for ma, mb in zip(mon_a_list,mon_b_list):
+    for ma, mb in tqdm(zip(mon_a_list,mon_b_list), desc="Computing energies"):
         try:
             en = energy_kernel(ma, mb, options, return_pairs=return_pairs) 
         except:

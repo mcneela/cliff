@@ -63,7 +63,7 @@ def file_finder(fname, ref = None, jobdir = None):
 
 # Set logger
 logger = logging.getLogger(__name__)
-fh = logging.FileHandler(name + '.log')
+fh = logging.FileHandler('logs/' + name + '.log')
 logger.addHandler(fh)
 
 def read_file(infile):
